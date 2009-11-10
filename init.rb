@@ -1,2 +1,2 @@
-# Include hook code here
-ActionView::Base.send :include, MenuHelper
+require 'menu_helper'
+ActionView::Base.send :include, SemanticMenuHelper

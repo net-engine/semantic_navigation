@@ -14,8 +14,10 @@
 #     <a href="/comments">comments</a>
 #   </li>
 # </ul>
-module MenuHelper
-  def semantic_menu(opts={}, &block)
-    SemanticMenu.new(controller, opts, &block).to_s
+module SemanticMenuHelper
+  def semantic_menu(options = {}, &block)
+    content = SemanticMenu::Menu.new(controller, options, &block).to_s
+    concat(content)
+    content
   end
 end

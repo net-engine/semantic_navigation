@@ -57,7 +57,11 @@ module SemanticMenu
           end
           
           request_uri = "#{request.protocol}#{request.host_with_port}#{request_uri}" if url_string =~ /^\w+:\/\//
-          !Regexp.new("^#{Regexp.escape(url_string)}").match(request_uri).nil?
+          if url_string =~ /^(\w+:\/\/[^\/]*|)\/?$/ or url_string == ''
+            url_string == request_uri
+          else
+            !Regexp.new("^#{Regexp.escape(url_string)}").match(request_uri).nil?
+          end
         else
           false
         end

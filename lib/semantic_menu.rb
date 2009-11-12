@@ -17,6 +17,10 @@ module SemanticMenu
       @items = []
     end
     
+    def empty?
+      @items.empty?
+    end
+    
     def to_s
       items.join("\n")
     end
@@ -41,7 +45,7 @@ module SemanticMenu
       options = {}
       options[:class] = SemanticMenu::active_class if active?
       children = super
-      children = content_tag :ul, children unless children.empty?
+      children = content_tag :ul, children unless empty?
       content_tag :li, link_to(@title, @url, @html_options) + children, options
     end
 
@@ -80,7 +84,7 @@ module SemanticMenu
     end
     
     def to_s
-      content_tag :ul, items.join("\n"), @options
+      empty?? '' : content_tag(:ul, items.join("\n"), @options)
     end
   end
 end

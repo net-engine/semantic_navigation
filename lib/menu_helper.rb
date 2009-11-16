@@ -16,7 +16,7 @@
 # </ul>
 module SemanticMenuHelper
   def semantic_menu(options = {}, &block)
-    content = SemanticMenu::Menu.new(controller, options, &block).to_s
+    content = SemanticMenu::Menu.new(controller, options, self, &block).to_s
     concat(content)
     content
   end

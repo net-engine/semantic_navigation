@@ -7,8 +7,6 @@ module SemanticMenu
   @@active_class = 'active'
   
   class Base
-    include ActionView::Helpers::TagHelper, ActionView::Helpers::UrlHelper
-    
     cattr_accessor :controller
     
     attr_accessor :items
@@ -29,13 +27,13 @@ module SemanticMenu
   class Item < Base
     attr_reader :url, :title
 
-    def initialize(title, url, html_options = {})
+    def initialize(title, url, html_options = {}, template = nil)
       super()
-      @title, @url, @html_options = title, url, html_options
+      @title, @url, @html_options, @template = title, url, html_options, template
     end
 
     def add(title, url, html_options = {}, &block)
-      returning(Item.new(title, url, html_options)) do |item|
+      returning(Item.new(title, url, html_options, @template)) do |item|
         @items << item
         yield item if block_given?
       end
@@ -46,13 +44,13 @@ module SemanticMenu
       options[:class] = SemanticMenu::active_class if active?
       children = super
       children = content_tag :ul, children unless empty?
-      content_tag :li, link_to(@title, @url, @html_options) + children, options
+      @template.content_tag :li, @template.link_to(@title, @url, @html_options) + children, options
     end
 
     def active?
       begin
         if @@controller
-          url_string = CGI.unescapeHTML(url_for(@url))
+          url_string = CGI.unescapeHTML(@template.url_for(@url))
           request = @@controller.request
           if url_string.index("?")
             request_uri = request.request_uri
@@ -76,15 +74,15 @@ module SemanticMenu
   class Menu < Item
     undef :url, :title, :active?
     
-    def initialize(controller, options = {}, &block)
-      @@controller, @items = controller, []
+    def initialize(controller, options = {}, template = nil, &block)
+      @@controller, @items, @template = controller, [], template
       @options = {:class => 'semantic-menu'}.merge options
       
       yield self if block_given?
     end
     
     def to_s
-      empty?? '' : content_tag(:ul, items.join("\n"), @options)
+      empty?? '' : @template.content_tag(:ul, items.join("\n"), @options)
     end
   end
 end

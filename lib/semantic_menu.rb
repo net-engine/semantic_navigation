@@ -44,7 +44,14 @@ module SemanticMenu
       options[:class] = SemanticMenu::active_class if active?
       children = super
       children = content_tag :ul, children unless empty?
-      @template.content_tag :li, @template.link_to(@title, @url, @html_options) + children, options
+      
+      content = if @url == false
+        @template.content_tag :span, @title, @html_options
+      else
+        @template.link_to @title, @url, @html_options
+      end
+      
+      @template.content_tag :li, content + children, options
     end
 
     def active?

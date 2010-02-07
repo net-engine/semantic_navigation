@@ -38,12 +38,19 @@ module SemanticMenu
         yield item if block_given?
       end
     end
+    
+    def pseudo_add(title, url, &block)
+      returning(PseudoItem.new(title, url, @template)) do |item|
+        @items << item
+        yield item if block_given?
+      end
+    end
 
     def to_s
       options = {}
       options[:class] = SemanticMenu::active_class if active?
       children = super
-      children = content_tag :ul, children unless empty?
+      children = @template.content_tag :ul, children unless empty?
       
       content = if @url == false
         @template.content_tag :span, @title, @html_options
@@ -55,26 +62,18 @@ module SemanticMenu
     end
 
     def active?
-      begin
-        if @@controller
-          url_string = CGI.unescapeHTML(@template.url_for(@url))
-          request = @@controller.request
-          if url_string.index("?")
-            request_uri = request.request_uri
-          else
-            request_uri = request.request_uri.split('?').first
-          end
-          
-          request_uri = "#{request.protocol}#{request.host_with_port}#{request_uri}" if url_string =~ /^\w+:\/\//
-          if url_string =~ /^(\w+:\/\/[^\/]*|)\/?$/ or url_string == ''
-            url_string == request_uri
-          else
-            !Regexp.new("^#{Regexp.escape(url_string)}").match(request_uri).nil?
-          end
-        else
-          false
-        end
-      end || @items.any?(&:active?)
+      return false if @url == false
+      @template.current_page?(@url) || @items.any?(&:active?)
+    end
+  end
+  
+  class PseudoItem < Item
+    def initialize(title, url, template = nil)
+      super(title, url, {}, template)
+    end
+    
+    def to_s
+      ''
     end
   end
   

@@ -26,6 +26,7 @@ module SemanticMenu
   
   class Item < Base
     attr_reader :url, :title
+    attr_accessor :active
 
     def initialize(title, url, html_options = {}, template = nil)
       super()
@@ -35,7 +36,13 @@ module SemanticMenu
     def add(title, url, html_options = {}, &block)
       returning(Item.new(title, url, html_options, @template)) do |item|
         @items << item
-        yield item if block_given?
+        if block_given?
+          if block.arity == 0
+            item.active = !!yield
+          else
+            yield item
+          end
+        end
       end
     end
     
@@ -45,10 +52,19 @@ module SemanticMenu
         yield item if block_given?
       end
     end
+    
+    def add_and_activate condition, title, url, html_options = {}, &block
+      item = add title, url, html_options, &block
+      item.active = !!condition
+      item
+    end
 
     def to_s
-      options = {}
-      options[:class] = SemanticMenu::active_class if active?
+      options = @html_options.delete(:html) || {}
+      if active?
+        options[:class] ||= ''
+        (options[:class] << " #{SemanticMenu::active_class}").strip!
+      end
       children = super
       children = @template.content_tag :ul, children unless empty?
       
@@ -63,7 +79,7 @@ module SemanticMenu
 
     def active?
       return false if @url == false
-      @template.current_page?(@url) || @items.any?(&:active?)
+      active || @template.current_page?(@url) || @items.any?(&:active?)
     end
   end
   

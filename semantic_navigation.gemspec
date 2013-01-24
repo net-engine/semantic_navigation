@@ -13,8 +13,8 @@ Gem::Specification.new do |s|
   s.has_rdoc = false
   s.rdoc_options = ['--main', 'README.rdoc']
   s.rdoc_options << '--inline-source' << '--charset=UTF-8'
-  s.extra_rdoc_files = ['README.rdoc', 'MIT-LICENSE', 'CHANGELOG.rdoc']
+  s.extra_rdoc_files = ['README.rdoc', 'MIT-LICENSE']
   
-  s.files = %w(CHANGELOG.rdoc MIT-LICENSE README.rdoc Rakefile init.rb install.rb lib/menu_helper.rb lib/semantic_menu.rb test/semantic_menu_test.rb tasts/semantic_menu_tasks.rake public/stylesheets/semantic-menu.css)
+  s.files = %w(MIT-LICENSE README.rdoc Rakefile init.rb install.rb lib/menu_helper.rb lib/semantic_menu.rb test/semantic_menu_test.rb tasks/semantic_menu_tasks.rake public/stylesheets/semantic-menu.css)
   s.test_files = %w(test/semantic_menu_test.rb)
 end

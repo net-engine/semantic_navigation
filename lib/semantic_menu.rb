@@ -104,7 +104,7 @@ module SemanticMenu
     end
 
     def to_s
-      empty?? '' : @template.content_tag(:ul, items.join("\n"), @options)
+      empty?? '' : @template.content_tag(:ul, items.join("\n").html_safe, @options)
     end
   end
 end

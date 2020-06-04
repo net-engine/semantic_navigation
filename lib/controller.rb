@@ -15,7 +15,7 @@ module SemanticMenu
             helper_method :#{name}
 
             def self.#{name} options = {}, &block
-              before_filter options do |controller|
+              before_action options do |controller|
                 controller.instance_exec(controller.#{name}, &block)
               end
             end

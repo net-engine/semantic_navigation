@@ -11,7 +11,7 @@ module SemanticMenu
             def #{name}
               @#{name} ||= SemanticMenu::Menu.new(self, {}, view_context)
             end
-            hide_action :#{name}
+          
             helper_method :#{name}
 
             def self.#{name} options = {}, &block

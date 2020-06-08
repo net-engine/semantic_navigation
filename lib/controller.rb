@@ -11,11 +11,11 @@ module SemanticMenu
             def #{name}
               @#{name} ||= SemanticMenu::Menu.new(self, {}, view_context)
             end
-            hide_action :#{name}
+          
             helper_method :#{name}
 
             def self.#{name} options = {}, &block
-              before_filter options do |controller|
+              before_action options do |controller|
                 controller.instance_exec(controller.#{name}, &block)
               end
             end

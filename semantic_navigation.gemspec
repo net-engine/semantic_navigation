@@ -10,7 +10,6 @@ Gem::Specification.new do |s|
   s.email = 'evil.marty@gmail.com'
   s.homepage = 'http://github.com/evilmarty/semantic_navigation'
   
-  s.has_rdoc = false
   s.rdoc_options = ['--main', 'README.rdoc']
   s.rdoc_options << '--inline-source' << '--charset=UTF-8'
   s.extra_rdoc_files = ['README.rdoc', 'MIT-LICENSE']

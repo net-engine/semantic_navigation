@@ -1,10 +1,16 @@
 require 'rubygems'
 require 'action_view'
 require 'active_support'
+require 'active_support/core_ext/module/attribute_accessors'
+require 'active_support/core_ext/string/output_safety'
 
 module SemanticMenu
   mattr_accessor :active_class
   @@active_class = 'active'
+
+  def self.template
+    ActionView::Base.empty
+  end
 
   class Base
     cattr_accessor :controller
@@ -30,7 +36,7 @@ module SemanticMenu
 
     def initialize(title, url, html_options = {}, template = nil)
       super()
-      @title, @url, @html_options, @template = title, url, html_options, template
+      @title, @url, @html_options, @template = title, url, html_options, template || SemanticMenu.template
     end
 
     def add(title, url, html_options = {}, &block)
@@ -66,7 +72,7 @@ module SemanticMenu
         (options[:class] << " #{SemanticMenu::active_class}").strip!
       end
       children = super
-      children = @template.content_tag :ul, children unless empty?
+      children = @template.content_tag :ul, children.html_safe unless empty?
 
       content = if @url == false
         @template.content_tag :span, @title, @html_options
@@ -97,14 +103,14 @@ module SemanticMenu
     undef :url, :title, :active?
 
     def initialize(controller, options = {}, template = nil, &block)
-      @@controller, @items, @template = controller, [], template
+      @@controller, @items, @template = controller, [], template || SemanticMenu.template
       @options = {:class => 'semantic-menu'}.merge options
 
       yield self if block_given?
     end
 
     def to_s
-      empty?? '' : @template.content_tag(:ul, items.join("\n"), @options)
+      empty?? '' : @template.content_tag(:ul, items.join("\n").html_safe, @options)
     end
   end
 end
